@@ -3,6 +3,7 @@ const path = require("path");
 require("dotenv").config();
 const cors = require("cors");
 
+const axios = require("axios");
 const mongoose = require("mongoose");
 const express = require("express");
 const app = express();
@@ -18,10 +19,44 @@ app.use(
 app.use(cors());
 
 app.post("/slack/lecturefeedback", async (req, res) => {
-  const { text, user_name } = req.body;
-  const [lectureId, rating, comment] = text.split(" ");
-  await Feedback.create({ lectureId, rating, comment, userName: user_name });
-  res.send("We got your feedback. Thank you!");
+  try {
+    const feedbackForm = require("./feedbackForm.json");
+    const payload = JSON.parse(req.body.payload);
+    if (payload.type === "view_submission") {
+      const {
+        lectureId: { lectureId },
+        contentDelivery: { contentDelivery },
+        classPreparedness: { classPreparedness },
+        contentQuality: { contentQuality },
+        overallExperience: { overallExperience },
+        comments: { comments },
+      } = payload.view.state.values;
+      await Feedback.create({
+        lectureId: lectureId.value,
+        userName: payload.user_name,
+        contentDelivery: contentDelivery.selected_option.value,
+        classPreparedness: classPreparedness.selected_option.value,
+        contentQuality: contentQuality.selected_option.value,
+        overallExperience: overallExperience.selected_option.value,
+        comments: comments.value,
+      });
+      return res.status(200).json({ response_action: "clear" });
+    } else {
+      feedbackForm.trigger_id = payload.trigger_id;
+      const response = await axios({
+        method: "post",
+        url: "https://slack.com/api/views.open",
+        headers: {
+          Authorization: "Bearer " + process.env.SLACK_BOT_TOKEN,
+          "Content-Type": "application/json",
+        },
+        data: feedbackForm,
+      });
+      return res.send("Ok");
+    }
+  } catch (e) {
+    console.error(e);
+  }
 });
 
 app.get("/", (req, res) => {

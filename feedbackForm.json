@@ -1,0 +1,289 @@
+{
+  "view": {
+    "title": {
+      "type": "plain_text",
+      "text": "Lecture Feedback",
+      "emoji": true
+    },
+    "callback_id": "lecture_feedback",
+    "submit": {
+      "type": "plain_text",
+      "text": "Submit",
+      "emoji": true
+    },
+    "type": "modal",
+    "close": {
+      "type": "plain_text",
+      "text": "Cancel",
+      "emoji": true
+    },
+    "blocks": [
+      {
+        "block_id": "lectureId",
+        "type": "input",
+        "element": {
+          "type": "plain_text_input",
+          "action_id": "lectureId"
+        },
+        "label": {
+          "type": "plain_text",
+          "text": "Lecture Id",
+          "emoji": true
+        }
+      },
+      {
+        "block_id": "contentDelivery",
+        "type": "input",
+        "element": {
+          "type": "static_select",
+          "placeholder": {
+            "type": "plain_text",
+            "text": "Select an item",
+            "emoji": true
+          },
+          "options": [
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "Very Poor",
+                "emoji": true
+              },
+              "value": "0"
+            },
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "Poor",
+                "emoji": true
+              },
+              "value": "1"
+            },
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "Average",
+                "emoji": true
+              },
+              "value": "2"
+            },
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "Good",
+                "emoji": true
+              },
+              "value": "3"
+            },
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "Excellent",
+                "emoji": true
+              },
+              "value": "4"
+            }
+          ],
+          "action_id": "contentDelivery"
+        },
+        "label": {
+          "type": "plain_text",
+          "text": "Content Delivery",
+          "emoji": true
+        }
+      },
+      {
+        "block_id": "classPreparedness",
+        "type": "input",
+        "element": {
+          "type": "static_select",
+          "placeholder": {
+            "type": "plain_text",
+            "text": "Select an item",
+            "emoji": true
+          },
+          "options": [
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "Very Poor",
+                "emoji": true
+              },
+              "value": "0"
+            },
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "Poor",
+                "emoji": true
+              },
+              "value": "1"
+            },
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "Average",
+                "emoji": true
+              },
+              "value": "2"
+            },
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "Good",
+                "emoji": true
+              },
+              "value": "3"
+            },
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "Excellent",
+                "emoji": true
+              },
+              "value": "4"
+            }
+          ],
+          "action_id": "classPreparedness"
+        },
+        "label": {
+          "type": "plain_text",
+          "text": "Class Preparedness",
+          "emoji": true
+        }
+      },
+      {
+        "block_id": "contentQuality",
+        "type": "input",
+        "element": {
+          "type": "static_select",
+          "placeholder": {
+            "type": "plain_text",
+            "text": "Select an item",
+            "emoji": true
+          },
+          "options": [
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "Very Poor",
+                "emoji": true
+              },
+              "value": "0"
+            },
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "Poor",
+                "emoji": true
+              },
+              "value": "1"
+            },
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "Average",
+                "emoji": true
+              },
+              "value": "2"
+            },
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "Good",
+                "emoji": true
+              },
+              "value": "3"
+            },
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "Excellent",
+                "emoji": true
+              },
+              "value": "4"
+            }
+          ],
+          "action_id": "contentQuality"
+        },
+        "label": {
+          "type": "plain_text",
+          "text": "Content Quality",
+          "emoji": true
+        }
+      },
+      {
+        "block_id": "overallExperience",
+        "type": "input",
+        "element": {
+          "type": "static_select",
+          "placeholder": {
+            "type": "plain_text",
+            "text": "Select an item",
+            "emoji": true
+          },
+          "options": [
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "Very Poor",
+                "emoji": true
+              },
+              "value": "0"
+            },
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "Poor",
+                "emoji": true
+              },
+              "value": "1"
+            },
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "Average",
+                "emoji": true
+              },
+              "value": "2"
+            },
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "Good",
+                "emoji": true
+              },
+              "value": "3"
+            },
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "Excellent",
+                "emoji": true
+              },
+              "value": "4"
+            }
+          ],
+          "action_id": "overallExperience"
+        },
+        "label": {
+          "type": "plain_text",
+          "text": "Overall Experience",
+          "emoji": true
+        }
+      },
+      {
+        "block_id": "comments",
+        "type": "input",
+        "element": {
+          "type": "plain_text_input",
+          "action_id": "comments"
+        },
+        "label": {
+          "type": "plain_text",
+          "text": "Comments",
+          "emoji": true
+        }
+      }
+    ]
+  }
+}

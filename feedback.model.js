@@ -2,8 +2,11 @@ const mongoose = require("mongoose");
 
 const feedbackSchema = mongoose.Schema({
   lectureId: { type: String, required: true },
-  rating: { type: String, required: true, enums: ["1", "2", "3", "4", "5"] },
-  comment: { type: String, required: true },
+  contentQuality: { type: String, required: true },
+  contentDelivery: { type: String, required: true },
+  classPreparedness: { type: String, required: true },
+  overallExperience: { type: String, required: true },
+  comments: { type: String, required: true },
   userName: { type: String, required: false },
 });
 
