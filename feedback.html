@@ -56,7 +56,7 @@
       getFeedback.addEventListener("click", () => {
         const lectureId = document.querySelector("#lectureId").value.trim();
         if (lectureId) {
-          const baseUrl = `http://fd58-2405-201-c02d-a007-d1f7-4e86-116b-5906.ngrok.io`;
+          const baseUrl = `https://lecture-feedback.herokuapp.com`;
           fetch(`${baseUrl}/feedback/${lectureId}`)
             .then(function (response) {
               return response.json();
