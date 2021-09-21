@@ -68,6 +68,14 @@
       });
 
       function createFeedbackTable(data) {
+        const ratingMap = {
+          0: "Very Poor",
+          1: "Poor",
+          2: "Average",
+          3: "Good",
+          4: "Excellent",
+        };
+
         if (data.length > 0) {
           const showFeedback = document.querySelector("#showFeedback");
           showFeedback.innerHTML = "";
@@ -75,27 +83,41 @@
           const tableHead = `
           <thead>
               <tr>
-                  <th>Rating</th>
-                  <th>Comment</th>
-                  <th>Username</th>
+                  <th>Content Delivery</th>
+                  <th>Class Preparedness</th>
+                  <th>Content Quality</th>
+                  <th>Overall Experience</th>
+                  <th>Comments</th>
               </tr>
           </thead>`;
 
           let feedback = "";
           let totalRating = 0;
-          for (const { lectureId, rating, comment, userName } of data) {
+          for (const {
+            lectureId,
+            contentQuality,
+            contentDelivery,
+            classPreparedness,
+            overallExperience,
+            userName,
+            comments,
+          } of data) {
             feedback += `<tr>
-                <td>${rating}</td>
-                <td>${comment}</td>
-                <td>${userName}</td>
+                <td>${ratingMap[contentDelivery]}</td>
+                <td>${ratingMap[classPreparedness]}</td>
+                <td>${ratingMap[contentQuality]}</td>
+                <td>${ratingMap[overallExperience]}</td>
+                <td>${comments}</td>
             </tr>`;
-            totalRating += Number(rating);
+            totalRating += Number(overallExperience);
           }
 
           table.innerHTML =
             tableHead +
             `<tbody>${feedback}</tbody>` +
-            `<caption>Average Rating: ${totalRating / data.length}</caption>`;
+            `<caption>Average Rating: ${Math.ceil(
+              totalRating / data.length
+            )}</caption>`;
           showFeedback.appendChild(table);
         }
       }
