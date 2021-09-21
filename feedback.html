@@ -93,6 +93,10 @@
 
           let feedback = "";
           let totalRating = 0;
+          let totalContentDeliveryRating = 0;
+          let totalClassPreparednessRating = 0;
+          let totalContentQualityRating = 0;
+          let totalOverallExperienceRating = 0;
           for (const {
             lectureId,
             contentQuality,
@@ -109,15 +113,42 @@
                 <td>${ratingMap[overallExperience]}</td>
                 <td>${comments}</td>
             </tr>`;
-            totalRating += Number(overallExperience);
+            totalContentDeliveryRating += Number(contentDelivery);
+            totalClassPreparednessRating += Number(classPreparedness);
+            totalContentQualityRating += Number(contentQuality);
+            totalOverallExperienceRating += Number(overallExperience);
           }
 
-          table.innerHTML =
-            tableHead +
-            `<tbody>${feedback}</tbody>` +
-            `<caption>Average Rating: ${Math.ceil(
-              totalRating / data.length
-            )}</caption>`;
+          totalContentDeliveryRating = Math.ceil(
+            totalContentDeliveryRating / data.length
+          );
+          totalClassPreparednessRating = Math.ceil(
+            totalClassPreparednessRating / data.length
+          );
+          totalContentQualityRating = Math.ceil(
+            totalContentQualityRating / data.length
+          );
+          totalOverallExperienceRating = Math.ceil(
+            totalOverallExperienceRating / data.length
+          );
+
+          totalRating = Math.ceil(
+            (totalContentDeliveryRating +
+              totalClassPreparednessRating +
+              totalContentQualityRating +
+              totalOverallExperienceRating) /
+              4
+          );
+
+          feedback += `<tr style="color: white; background-color: #ff6666; font-weight: bold">
+          <td>Score: ${ratingMap[totalContentDeliveryRating]}</td>
+          <td>Score: ${ratingMap[totalClassPreparednessRating]}</td>
+          <td>Score: ${ratingMap[totalContentQualityRating]}</td>
+          <td>Score: ${ratingMap[totalOverallExperienceRating]}</td>
+          <td>Overall Score: ${ratingMap[totalRating]}</td>
+          </tr>`;
+
+          table.innerHTML = tableHead + `<tbody>${feedback}</tbody>`;
           showFeedback.appendChild(table);
         }
       }
