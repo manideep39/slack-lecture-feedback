@@ -24,16 +24,18 @@ app.post("/slack/lecturefeedback", async (req, res) => {
     const payload = JSON.parse(req.body.payload);
     if (payload.type === "view_submission") {
       const {
-        lectureId: { lectureId },
         contentDelivery: { contentDelivery },
         classPreparedness: { classPreparedness },
         contentQuality: { contentQuality },
         overallExperience: { overallExperience },
         comments: { comments },
+        sessionLead: { sessionLead },
+        sessionDate: { sessionDate },
       } = payload.view.state.values;
+      console.log(sessionLead, sessionDate);
       await Feedback.create({
-        lectureId: lectureId.value,
-        userName: payload.user_name,
+        sessionDate: sessionDate.selected_date,
+        sessionLead: sessionLead.selected_option.value,
         contentDelivery: contentDelivery.selected_option.value,
         classPreparedness: classPreparedness.selected_option.value,
         contentQuality: contentQuality.selected_option.value,
@@ -66,7 +68,7 @@ app.get("/", (req, res) => {
 app.get("/feedback/:lectureId", async (req, res) => {
   try {
     const lectureId = req.params.lectureId;
-    const feedback = await Feedback.find({ lectureId });
+    const feedback = await Feedback.find({ sessionDate: lectureId });
     res.status(200).json(feedback);
   } catch (err) {
     res.status(500).send("Something went wrong");

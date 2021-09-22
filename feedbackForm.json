@@ -19,15 +19,48 @@
     },
     "blocks": [
       {
-        "block_id": "lectureId",
+        "block_id": "sessionDate",
         "type": "input",
         "element": {
-          "type": "plain_text_input",
-          "action_id": "lectureId"
+          "type": "datepicker",
+          "placeholder": {
+            "type": "plain_text",
+            "text": "Select a date",
+            "emoji": true
+          },
+          "action_id": "sessionDate"
         },
         "label": {
           "type": "plain_text",
-          "text": "Lecture Id",
+          "text": "Session Date",
+          "emoji": true
+        }
+      },
+      {
+        "block_id": "sessionLead",
+        "type": "input",
+        "element": {
+          "type": "static_select",
+          "placeholder": {
+            "type": "plain_text",
+            "text": "Select an item",
+            "emoji": true
+          },
+          "options": [
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "Kushdeep Mittal",
+                "emoji": true
+              },
+              "value": "Kushdeep Mittal"
+            }
+          ],
+          "action_id": "sessionLead"
+        },
+        "label": {
+          "type": "plain_text",
+          "text": "Session Lead",
           "emoji": true
         }
       },
@@ -276,7 +309,8 @@
         "type": "input",
         "element": {
           "type": "plain_text_input",
-          "action_id": "comments"
+          "action_id": "comments",
+          "initial_value": "No comments."
         },
         "label": {
           "type": "plain_text",
