@@ -1,0 +1,7 @@
+{
+    "app_id": "lecture-feedback-eacsn",
+    "config_version": 20210101,
+    "name": "lecture-feedback",
+    "location": "US-VA",
+    "deployment_model": "LOCAL"
+}
