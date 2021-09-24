@@ -37,7 +37,7 @@ app.post("/slack/lecturefeedback", async (req, res) => {
       } = payload.view.state.values;
       console.log(sessionLead, sessionDate);
       await Feedback.create({
-        teamId: payload.team.id
+        teamId: payload.team.id,
         sessionDate: sessionDate.selected_date,
         sessionLead: sessionLead.selected_option.value,
         contentDelivery: contentDelivery.selected_option.value,
@@ -89,6 +89,15 @@ app.get("/callback", generateAccessToken, async (req, res) => {
     } = slackData;
     await Team.create({ teamId, name, accessToken });
     res.sendFile(path.join(__dirname, "/feedback.html"));
+  } catch (err) {
+    res.status(500).send(`Something went wrong: ${err}`);
+  }
+});
+
+app.put("/sessionLeads", async (req, res) => {
+  try {
+    await Team.findByIdAndUpdate({ sessionLeads: req.body.sessionLeads });
+    res.status(200);
   } catch (err) {
     res.status(500).send(`Something went wrong: ${err}`);
   }
