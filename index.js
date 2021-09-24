@@ -83,10 +83,12 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "/feedback.html"));
 });
 
-app.get("/feedback/:lectureId", async (req, res) => {
+app.get("/feedback", async (req, res) => {
   try {
-    const lectureId = req.params.lectureId;
-    const feedback = await Feedback.find({ sessionDate: lectureId });
+    const { teamId, sessionLead, sessionDate } = req.query;
+    let feedback = await Feedback.find({
+      $or: [{ teamId }, { sessionLead }, { sessionDate }],
+    });
     res.status(200).json(feedback);
   } catch (err) {
     res.status(500).send("Something went wrong");

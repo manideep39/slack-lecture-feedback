@@ -46,13 +46,13 @@
   </head>
   <body>
     <div style="text-align: center">
-      <h1>Feedback</h1>
+      <h1>Lecture Feedback</h1>
       <select id="teams"></select>
       <select id="sessionLeads">
         <option value="">Select Session Lead</option>
       </select>
-      <input type="date" placeholder="Lecture Id" id="lectureId" />
-      <button id="getFeedback">Get feedback</button>
+      <input type="date" id="sessionDate" />
+      <button id="getFeedback">Get Feedback</button>
     </div>
     <div id="showFeedback" style="display: flex; justify-content: center"></div>
     <script type="text/javascript">
@@ -82,14 +82,18 @@
           .map((leadName) => `<option value=${leadName}>${leadName}</option>`)
           .join("");
         sessionLeadsSelect.innerHTML =
-          "<option>Choose Session Lead</option>" + options;
+          "<option value=''>Choose Session Lead</option>" + options;
       });
 
       const getFeedback = document.querySelector("#getFeedback");
       getFeedback.addEventListener("click", () => {
-        const lectureId = document.querySelector("#lectureId").value.trim();
-        if (lectureId) {
-          fetch(`${baseUrl}/feedback/${lectureId}`)
+        const teamId = document.querySelector("#teams").value;
+        const sessionLead = document.querySelector("#sessionLeads").value;
+        const sessionDate = document.querySelector("#sessionDate").value;
+        if (teamId || sessionLead || sessionDate) {
+          fetch(
+            `${baseUrl}/feedback?teamId=${teamId}&sessionLead=${sessionLead}&sessionDate=${sessionDate}`
+          )
             .then(function (response) {
               return response.json();
             })
