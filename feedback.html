@@ -47,16 +47,48 @@
   <body>
     <div style="text-align: center">
       <h1>Feedback</h1>
+      <select id="teams"></select>
+      <select id="sessionLeads">
+        <option value="">Select Session Lead</option>
+      </select>
       <input type="date" placeholder="Lecture Id" id="lectureId" />
       <button id="getFeedback">Get feedback</button>
     </div>
     <div id="showFeedback" style="display: flex; justify-content: center"></div>
     <script type="text/javascript">
+      const baseUrl = `https://lecture-feedback.herokuapp.com`;
+      let teamsData;
+
+      window.onload = () => {
+        fetch(`${baseUrl}/teams`)
+          .then(function (response) {
+            return response.json();
+          })
+          .then(function (data) {
+            teamsData = data;
+            populateTeams(teamsData);
+          });
+      };
+
+      const teams = document.querySelector("#teams");
+      teams.addEventListener("change", (event) => {
+        const sessionLeadsSelect = document.querySelector("#sessionLeads");
+        const sessionLeads = teamsData.find(
+          (team) => team.teamId === event.target.value
+        )?.sessionLeads;
+        if (!sessionLeads) return;
+        sessionLeadsSelect.innerHTML = "";
+        const options = sessionLeads
+          .map((leadName) => `<option value=${leadName}>${leadName}</option>`)
+          .join("");
+        sessionLeadsSelect.innerHTML =
+          "<option>Choose Session Lead</option>" + options;
+      });
+
       const getFeedback = document.querySelector("#getFeedback");
       getFeedback.addEventListener("click", () => {
         const lectureId = document.querySelector("#lectureId").value.trim();
         if (lectureId) {
-          const baseUrl = `https://lecture-feedback.herokuapp.com`;
           fetch(`${baseUrl}/feedback/${lectureId}`)
             .then(function (response) {
               return response.json();
@@ -66,6 +98,18 @@
             });
         }
       });
+
+      function populateTeams(teams) {
+        const teamsSelect = document.querySelector("#teams");
+        teamsSelect.innerHTML = "";
+        const options = teams
+          .map(function ({ teamId, name }) {
+            return `<option value=${teamId}>${name}</option>`;
+          })
+          .join("");
+        teamsSelect.innerHTML =
+          "<option value=''>Select Workspace</option>" + options;
+      }
 
       function createFeedbackTable(data) {
         const ratingMap = {

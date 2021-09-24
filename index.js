@@ -35,7 +35,6 @@ app.post("/slack/lecturefeedback", async (req, res) => {
         sessionLead: { sessionLead },
         sessionDate: { sessionDate },
       } = payload.view.state.values;
-      console.log(sessionLead, sessionDate);
       await Feedback.create({
         teamId: payload.team.id,
         sessionDate: sessionDate.selected_date,
@@ -118,6 +117,15 @@ app.put("/sessionLeads", async (req, res) => {
     res.status(200).send("Updated!");
   } catch (err) {
     res.status(500).send(`Something went wrong: ${err}`);
+  }
+});
+
+app.get("/teams", async (req, res) => {
+  try {
+    const allTeams = await Team.find().lean();
+    res.status(200).json(allTeams);
+  } catch (error) {
+    res.status(500).send(`Something went wrong: ${error}`);
   }
 });
 
