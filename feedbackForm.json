@@ -46,16 +46,7 @@
             "text": "Select an item",
             "emoji": true
           },
-          "options": [
-            {
-              "text": {
-                "type": "plain_text",
-                "text": "Kushdeep Mittal",
-                "emoji": true
-              },
-              "value": "Kushdeep Mittal"
-            }
-          ],
+          "options": [],
           "action_id": "sessionLead"
         },
         "label": {

@@ -48,8 +48,22 @@ app.post("/slack/lecturefeedback", async (req, res) => {
       });
       return res.status(200).json({ response_action: "clear" });
     } else {
-      const { accessToken } = await Team.findOne({ teamId: payload.team.id });
+      const { accessToken, sessionLeads } = await Team.findOne({
+        teamId: payload.team.id,
+      });
+
       feedbackForm.trigger_id = payload.trigger_id;
+      feedbackForm.view.blocks[1].element.options = sessionLeads.map(
+        (lead) => ({
+          text: {
+            type: "plain_text",
+            text: `${lead}`,
+            emoji: true,
+          },
+          value: `${lead}`,
+        })
+      );
+
       const response = await axios({
         method: "post",
         url: "https://slack.com/api/views.open",
@@ -96,8 +110,12 @@ app.get("/callback", generateAccessToken, async (req, res) => {
 
 app.put("/sessionLeads", async (req, res) => {
   try {
-    await Team.findByIdAndUpdate({ sessionLeads: req.body.sessionLeads });
-    res.status(200);
+    const { teamId, sessionLeads } = req.body;
+    await Team.findOneAndUpdate(
+      { teamId },
+      { sessionLeads: req.body.sessionLeads }
+    );
+    res.status(200).send("Updated!");
   } catch (err) {
     res.status(500).send(`Something went wrong: ${err}`);
   }
