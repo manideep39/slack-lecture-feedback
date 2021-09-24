@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 const feedbackSchema = mongoose.Schema({
+  teamId: { type: String, required: true },
   sessionDate: { type: String, required: true },
   sessionLead: { type: String, required: true },
   contentQuality: { type: String, required: true },

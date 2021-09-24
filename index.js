@@ -37,6 +37,7 @@ app.post("/slack/lecturefeedback", async (req, res) => {
       } = payload.view.state.values;
       console.log(sessionLead, sessionDate);
       await Feedback.create({
+        teamId: payload.team.id
         sessionDate: sessionDate.selected_date,
         sessionLead: sessionLead.selected_option.value,
         contentDelivery: contentDelivery.selected_option.value,
