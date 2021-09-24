@@ -9,6 +9,7 @@ const express = require("express");
 const app = express();
 
 const Feedback = require("./feedback.model");
+const Team = require("./team.model");
 
 app.use(express.json());
 app.use(
@@ -17,6 +18,8 @@ app.use(
   })
 );
 app.use(cors());
+
+const { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI } = process.env;
 
 app.post("/slack/lecturefeedback", async (req, res) => {
   try {
@@ -44,12 +47,13 @@ app.post("/slack/lecturefeedback", async (req, res) => {
       });
       return res.status(200).json({ response_action: "clear" });
     } else {
+      const { accessToken } = await Team.findOne({ teamId: payload.team.id });
       feedbackForm.trigger_id = payload.trigger_id;
       const response = await axios({
         method: "post",
         url: "https://slack.com/api/views.open",
         headers: {
-          Authorization: "Bearer " + process.env.SLACK_BOT_TOKEN,
+          Authorization: "Bearer " + accessToken,
           "Content-Type": "application/json",
         },
         data: feedbackForm,
@@ -75,6 +79,20 @@ app.get("/feedback/:lectureId", async (req, res) => {
   }
 });
 
+app.get("/callback", generateAccessToken, async (req, res) => {
+  try {
+    const slackData = req.slackData;
+    const {
+      team: { id: teamId, name },
+      access_token: accessToken,
+    } = slackData;
+    await Team.create({ teamId, name, accessToken });
+    res.sendFile(path.join(__dirname, "/feedback.html"));
+  } catch (err) {
+    res.status(500).send(`Something went wrong: ${err}`);
+  }
+});
+
 app.listen(process.env.PORT || 3000, () => {
   try {
     mongoose.connect(
@@ -87,3 +105,39 @@ app.listen(process.env.PORT || 3000, () => {
   }
   console.log(`listening on port ${process.env.PORT}`);
 });
+
+async function generateAccessToken(req, res, next) {
+  const code = req.query.code;
+  const url = "https://slack.com/api/oauth.v2.access";
+  const requestBody = new URLSearchParams(
+    Object.entries({
+      client_id: CLIENT_ID,
+      client_secret: CLIENT_SECRET,
+      grant_type: "authorization_code",
+      code: code,
+      redirect_uri: REDIRECT_URI,
+    })
+  ).toString();
+  const { data } = await postData(url, requestBody);
+  req.slackData = data;
+
+  next();
+}
+
+// Example POST method implementation:
+async function postData(url = "", data = "") {
+  // Default options are marked with *
+  const response = await axios({
+    url,
+    method: "post",
+    mode: "cors", // no-cors, *cors, same-origin
+    credentials: "same-origin", // include, *same-origin, omit
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    redirect: "follow", // manual, *follow, error
+    referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+    data, // body data type must match "Content-Type" header
+  });
+  return response; // parses JSON response into native JavaScript objects
+}
