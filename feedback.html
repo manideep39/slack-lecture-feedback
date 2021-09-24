@@ -167,20 +167,20 @@
             totalOverallExperienceRating += Number(overallExperience);
           }
 
-          totalContentDeliveryRating = Math.ceil(
+          totalContentDeliveryRating = Math.round(
             totalContentDeliveryRating / data.length
           );
-          totalClassPreparednessRating = Math.ceil(
+          totalClassPreparednessRating = Math.round(
             totalClassPreparednessRating / data.length
           );
-          totalContentQualityRating = Math.ceil(
+          totalContentQualityRating = Math.round(
             totalContentQualityRating / data.length
           );
-          totalOverallExperienceRating = Math.ceil(
+          totalOverallExperienceRating = Math.round(
             totalOverallExperienceRating / data.length
           );
 
-          totalRating = Math.ceil(
+          totalRating = Math.round(
             (totalContentDeliveryRating +
               totalClassPreparednessRating +
               totalContentQualityRating +
