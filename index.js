@@ -59,7 +59,7 @@ app.post("/slack/lecturefeedback", async (req, res) => {
             text: `${lead}`,
             emoji: true,
           },
-          value: `${lead}`,
+          value: `${lead.trim().toLowerCase().replace(/ /g, "-")}`,
         })
       );
 
