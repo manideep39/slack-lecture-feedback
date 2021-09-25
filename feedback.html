@@ -17,6 +17,9 @@
         font-family: sans-serif;
         font-size: 0.8rem;
         margin-top: 50px;
+        overflow-y: scroll;
+        height: 70vh;
+        display: block;
       }
 
       caption {
@@ -79,7 +82,12 @@
         if (!sessionLeads) return;
         sessionLeadsSelect.innerHTML = "";
         const options = sessionLeads
-          .map((leadName) => `<option value=${leadName}>${leadName}</option>`)
+          .map(
+            (leadName) =>
+              `<option value=${leadName
+                .toLowerCase()
+                .replaceAll(" ", "-")}>${leadName}</option>`
+          )
           .join("");
         sessionLeadsSelect.innerHTML =
           "<option value=''>Choose Session Lead</option>" + options;
@@ -188,7 +196,7 @@
               4
           );
 
-          feedback += `<tr style="color: white; background-color: #ff6666; font-weight: bold">
+          feedback += `<tr style="color: white; background-color: #de3163; font-weight: bold">
           <td>Score: ${ratingMap[totalContentDeliveryRating]}</td>
           <td>Score: ${ratingMap[totalClassPreparednessRating]}</td>
           <td>Score: ${ratingMap[totalContentQualityRating]}</td>
