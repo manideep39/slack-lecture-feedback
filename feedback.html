@@ -8,6 +8,7 @@
     <style type="text/css">
       * {
         font-family: "Helvetica Neue";
+        margin: 0;
       }
 
       table {
@@ -16,15 +17,8 @@
         letter-spacing: 1px;
         font-family: sans-serif;
         font-size: 0.8rem;
-        margin-top: 50px;
         overflow-y: scroll;
-        height: 70vh;
         display: block;
-      }
-
-      caption {
-        padding: 10px;
-        caption-side: top;
       }
 
       td,
@@ -45,11 +39,29 @@
       tbody {
         background-color: #e4f0f5;
       }
+
+      .title {
+        margin: 50px 0px 10px 0px;
+        text-align: center;
+        color: rgb(73, 115, 150);
+      }
+
+      #navbar {
+        border: 1px solid black;
+        text-align: center;
+        background-color: rgb(73, 115, 150);
+        color: #fff;
+        height: 70px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
     </style>
   </head>
   <body>
+    <h1 id="navbar">Lecture Feedback</h1>
     <div style="text-align: center">
-      <h1>Lecture Feedback</h1>
+      <h1 class="title">Query</h1>
       <form id="feedback">
         <select id="teams"></select>
         <select id="sessionLeads">
@@ -57,10 +69,19 @@
         </select>
         <input type="date" id="sessionDate" />
         <input type="password" id="key" placeholder="Enter key" />
-        <input type="submit" value="Feedback" />
+        <input type="submit" value="Submit" />
       </form>
     </div>
-    <div id="showFeedback" style="display: flex; justify-content: center"></div>
+
+    <div
+      id="showSummary"
+      style="display: flex; flex-direction: column; align-items: center"
+    ></div>
+    <div
+      id="showFeedback"
+      style="display: flex; flex-direction: column; align-items: center"
+    ></div>
+
     <script type="text/javascript">
       const baseUrl = `https://lecture-feedback.herokuapp.com`;
       let teamsData;
@@ -112,7 +133,9 @@
               return response.json();
             })
             .then(function (myJson) {
+              console.log(myJson);
               createFeedbackTable(myJson);
+              showSummaryTable(myJson);
             })
             .catch(function (error) {
               console.log(error);
@@ -141,10 +164,10 @@
           4: "Excellent",
         };
 
+        const showFeedback = document.querySelector("#showFeedback");
+        showFeedback.innerHTML = "";
+
         if (data.length > 0) {
-          const showFeedback = document.querySelector("#showFeedback");
-          showFeedback.innerHTML = "";
-          const table = document.createElement("table");
           const tableHead = `
           <thead>
               <tr>
@@ -157,18 +180,11 @@
           </thead>`;
 
           let feedback = "";
-          let totalRating = 0;
-          let totalContentDeliveryRating = 0;
-          let totalClassPreparednessRating = 0;
-          let totalContentQualityRating = 0;
-          let totalOverallExperienceRating = 0;
           for (const {
-            lectureId,
             contentQuality,
             contentDelivery,
             classPreparedness,
             overallExperience,
-            userName,
             comments,
           } of data) {
             feedback += `<tr>
@@ -178,6 +194,47 @@
                 <td>${ratingMap[overallExperience]}</td>
                 <td>${comments}</td>
             </tr>`;
+          }
+          const title = `<h1 class="title">Detailed Feedback</h1>`;
+          showFeedback.innerHTML = `${title}<table>${tableHead}<tbody>${feedback}</tbody></table>`;
+        }
+      }
+
+      function showSummaryTable(data) {
+        const ratingMap = {
+          0: "Very Poor",
+          1: "Poor",
+          2: "Average",
+          3: "Good",
+          4: "Excellent",
+        };
+
+        const showSummary = document.querySelector("#showSummary");
+        showSummary.innerHTML = "";
+
+        if (data.length > 0) {
+          const tableHead = `
+          <thead>
+              <tr>
+                  <th>Total Feedbacks Collected</th>
+                  <th>Content Delivery</th>
+                  <th>Class Preparedness</th>
+                  <th>Content Quality</th>
+                  <th>Overall Experience</th>
+              </tr>
+          </thead>`;
+
+          let totalContentDeliveryRating = 0;
+          let totalClassPreparednessRating = 0;
+          let totalContentQualityRating = 0;
+          let totalOverallExperienceRating = 0;
+
+          for (const {
+            contentDelivery,
+            classPreparedness,
+            contentQuality,
+            overallExperience,
+          } of data) {
             totalContentDeliveryRating += Number(contentDelivery);
             totalClassPreparednessRating += Number(classPreparedness);
             totalContentQualityRating += Number(contentQuality);
@@ -197,24 +254,16 @@
             totalOverallExperienceRating / data.length
           );
 
-          totalRating = Math.round(
-            (totalContentDeliveryRating +
-              totalClassPreparednessRating +
-              totalContentQualityRating +
-              totalOverallExperienceRating) /
-              4
-          );
+          const summaryStats = `<tr>
+                <td>${data.length}</td>
+                <td>${ratingMap[totalContentDeliveryRating]}</td>
+                <td>${ratingMap[totalClassPreparednessRating]}</td>
+                <td>${ratingMap[totalContentQualityRating]}</td>
+                <td>${ratingMap[totalOverallExperienceRating]}</td>
+            </tr>`;
 
-          feedback += `<tr style="color: white; background-color: #de3163; font-weight: bold">
-          <td>Score: ${ratingMap[totalContentDeliveryRating]}</td>
-          <td>Score: ${ratingMap[totalClassPreparednessRating]}</td>
-          <td>Score: ${ratingMap[totalContentQualityRating]}</td>
-          <td>Score: ${ratingMap[totalOverallExperienceRating]}</td>
-          <td>Overall Score: ${ratingMap[totalRating]}</td>
-          </tr>`;
-
-          table.innerHTML = tableHead + `<tbody>${feedback}</tbody>`;
-          showFeedback.appendChild(table);
+          const title = `<h1 class="title">Summary</h1>`;
+          showSummary.innerHTML = `${title}<table>${tableHead}<tbody>${summaryStats}</tbody></table>`;
         }
       }
     </script>
