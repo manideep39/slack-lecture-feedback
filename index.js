@@ -132,7 +132,7 @@ app.put("/sessionLeads", async (req, res) => {
   try {
     const { teamId, sessionLeads, key } = req.body;
     if (key != KEY) {
-      return res.status(403).sen("You are not authorized. Wrong key.");
+      return res.status(403).send("You are not authorized. Wrong key.");
     }
     await Team.findOneAndUpdate(
       { teamId },
