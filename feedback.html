@@ -55,6 +55,7 @@
         <option value="">Select Session Lead</option>
       </select>
       <input type="date" id="sessionDate" />
+      <input type="password" id="key" placeholder="Enter key" />
       <button id="getFeedback">Get Feedback</button>
     </div>
     <div id="showFeedback" style="display: flex; justify-content: center"></div>
@@ -98,15 +99,19 @@
         const teamId = document.querySelector("#teams").value;
         const sessionLead = document.querySelector("#sessionLeads").value;
         const sessionDate = document.querySelector("#sessionDate").value;
+        const key = document.querySelector("#key").value;
         if (teamId || sessionLead || sessionDate) {
           fetch(
-            `${baseUrl}/feedback?teamId=${teamId}&sessionLead=${sessionLead}&sessionDate=${sessionDate}`
+            `${baseUrl}/feedback?key=${key}&teamId=${teamId}&sessionLead=${sessionLead}&sessionDate=${sessionDate}`
           )
             .then(function (response) {
               return response.json();
             })
             .then(function (myJson) {
               createFeedbackTable(myJson);
+            })
+            .catch(function (error) {
+              console.log(error);
             });
         }
       });

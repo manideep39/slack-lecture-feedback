@@ -19,7 +19,7 @@ app.use(
 );
 app.use(cors());
 
-const { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI } = process.env;
+const { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI, KEY } = process.env;
 
 app.post("/slack/lecturefeedback", async (req, res) => {
   try {
@@ -85,7 +85,12 @@ app.get("/", (req, res) => {
 
 app.get("/feedback", async (req, res) => {
   try {
-    const { teamId, sessionLead, sessionDate } = req.query;
+    const { teamId, sessionLead, sessionDate, key = "" } = req.query;
+
+    if (key != KEY) {
+      return res.status(403).send("You are not authorized. Wrong key.");
+    }
+
     let feedback;
     if (teamId && sessionLead && sessionDate) {
       feedback = await Feedback.find({ teamId, sessionLead, sessionDate });
@@ -102,6 +107,7 @@ app.get("/feedback", async (req, res) => {
     } else if (sessionDate) {
       feedback = await Feedback.find({ sessionDate });
     }
+
     res.status(200).json(feedback);
   } catch (err) {
     res.status(500).send("Something went wrong");
@@ -124,11 +130,15 @@ app.get("/callback", generateAccessToken, async (req, res) => {
 
 app.put("/sessionLeads", async (req, res) => {
   try {
-    const { teamId, sessionLeads } = req.body;
+    const { teamId, sessionLeads, key } = req.body;
+    if (key != KEY) {
+      return res.status(403).sen("You are not authorized. Wrong key.");
+    }
     await Team.findOneAndUpdate(
       { teamId },
       { sessionLeads: req.body.sessionLeads }
     );
+
     res.status(200).send("Updated!");
   } catch (err) {
     res.status(500).send(`Something went wrong: ${err}`);
