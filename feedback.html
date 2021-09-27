@@ -112,6 +112,7 @@
                 .toLowerCase()
                 .replaceAll(" ", "-")}>${leadName}</option>`
           )
+          .sort()
           .join("");
         sessionLeadsSelect.innerHTML =
           "<option value=''>Choose Session Lead</option>" + options;

@@ -147,7 +147,7 @@ app.put("/sessionLeads", async (req, res) => {
 
 app.get("/teams", async (req, res) => {
   try {
-    const allTeams = await Team.find().lean();
+    const allTeams = await Team.find().sort({ name: 1, _id: 1 }).lean();
     res.status(200).json(allTeams);
   } catch (error) {
     res.status(500).send(`Something went wrong: ${error}`);
