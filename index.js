@@ -86,9 +86,22 @@ app.get("/", (req, res) => {
 app.get("/feedback", async (req, res) => {
   try {
     const { teamId, sessionLead, sessionDate } = req.query;
-    let feedback = await Feedback.find({
-      $or: [{ teamId }, { sessionLead }, { sessionDate }],
-    });
+    let feedback;
+    if (teamId && sessionLead && sessionDate) {
+      feedback = await Feedback.find({ teamId, sessionLead, sessionDate });
+    } else if (teamId && sessionLead) {
+      feedback = await Feedback.find({ teamId, sessionLead });
+    } else if (teamId && sessionDate) {
+      feedback = await Feedback.find({ teamId, sessionDate });
+    } else if (sessionLead && sessionDate) {
+      feedback = await Feedback.find({ sessionLead, sessionDate });
+    } else if (teamId) {
+      feedback = await Feedback.find({ teamId });
+    } else if (sessionLead) {
+      feedback = await Feedback.find({ sessionLead });
+    } else if (sessionDate) {
+      feedback = await Feedback.find({ sessionDate });
+    }
     res.status(200).json(feedback);
   } catch (err) {
     res.status(500).send("Something went wrong");
@@ -136,7 +149,7 @@ app.listen(process.env.PORT || 3000, () => {
     mongoose.connect(
       process.env.MONGODB_URI,
       { useNewUrlParser: true, useUnifiedTopology: true },
-      () => console.log("Mongoose is connected")
+      async () => console.log("Mongoose is connected")
     );
   } catch (e) {
     console.log("could not connect");
