@@ -171,6 +171,7 @@
                   <th>Content Quality</th>
                   <th>Overall Experience</th>
                   <th>Comments</th>
+                  <th>Sentiment</th>
               </tr>
           </thead>`;
 
@@ -184,12 +185,22 @@
             sentiment,
           } of data) {
             feedback += `<tr>
-                <td>${+contentDelivery + 1}</td>
-                <td>${+classPreparedness + 1}</td>
-                <td>${+contentQuality + 1}</td>
-                <td>${+overallExperience + 1}</td>
+                <td style=${
+                  Number(contentDelivery) <= 1 && "background-color:#FF8A80"
+                }>${+contentDelivery + 1}</td>
+                <td style=${
+                  Number(classPreparedness) <= 1 && "background-color:#FF8A80"
+                }>${+classPreparedness + 1}</td>
+                <td style=${
+                  Number(contentQuality) <= 1 && "background-color:#FF8A80"
+                }>${+contentQuality + 1}</td>
+                <td style=${
+                  Number(overallExperience) <= 1 && "background-color:#FF8A80"
+                }>${+overallExperience + 1}</td>
                 <td>${comments}</td>
-                <td>${sentiment}</td>
+                <td style=${
+                  sentiment === "Negative" && "background-color:#FF8A80"
+                }>${sentiment}</td>
             </tr>`;
           }
           const title = `<h1 class="title">Detailed Feedback</h1>`;
