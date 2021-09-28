@@ -122,11 +122,11 @@ app.get("/callback", generateAccessToken, async (req, res) => {
       access_token: accessToken,
     } = slackData;
 
-    const oldTeam = Team.findOne({ teamId });
-    if (!oldTeam) {
+    const oldTeam = await Team.find({ teamId }).lean();
+    if (!oldTeam.length) {
       await Team.create({ teamId, name, accessToken });
     } else {
-      await Team.updateOne({ teamId }, { accessToken });
+      await Team.findOneAndUpdate({ teamId }, { accessToken });
     }
 
     res.sendFile(path.join(__dirname, "/feedback.html"));
