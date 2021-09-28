@@ -121,7 +121,14 @@ app.get("/callback", generateAccessToken, async (req, res) => {
       team: { id: teamId, name },
       access_token: accessToken,
     } = slackData;
-    await Team.create({ teamId, name, accessToken });
+
+    const oldTeam = Team.findOne({ teamId });
+    if (!oldTeam) {
+      await Team.create({ teamId, name, accessToken });
+    } else {
+      await Team.updateOne({ teamId }, { accessToken });
+    }
+
     res.sendFile(path.join(__dirname, "/feedback.html"));
   } catch (err) {
     res.status(500).send(`Something went wrong: ${err}`);
