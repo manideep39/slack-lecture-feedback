@@ -159,14 +159,6 @@
       }
 
       function createFeedbackTable(data) {
-        const ratingMap = {
-          0: "Very Poor",
-          1: "Poor",
-          2: "Average",
-          3: "Good",
-          4: "Excellent",
-        };
-
         const showFeedback = document.querySelector("#showFeedback");
         showFeedback.innerHTML = "";
 
@@ -191,10 +183,10 @@
             comments,
           } of data) {
             feedback += `<tr>
-                <td>${ratingMap[contentDelivery]}</td>
-                <td>${ratingMap[classPreparedness]}</td>
-                <td>${ratingMap[contentQuality]}</td>
-                <td>${ratingMap[overallExperience]}</td>
+                <td>${+contentDelivery + 1}</td>
+                <td>${+classPreparedness + 1}</td>
+                <td>${+contentQuality + 1}</td>
+                <td>${+overallExperience + 1}</td>
                 <td>${comments}</td>
             </tr>`;
           }
@@ -204,14 +196,6 @@
       }
 
       function showSummaryTable(data) {
-        const ratingMap = {
-          0: "Very Poor",
-          1: "Poor",
-          2: "Average",
-          3: "Good",
-          4: "Excellent",
-        };
-
         const showSummary = document.querySelector("#showSummary");
         showSummary.innerHTML = "";
 
@@ -244,25 +228,29 @@
             totalOverallExperienceRating += Number(overallExperience);
           }
 
-          totalContentDeliveryRating = Math.round(
-            totalContentDeliveryRating / data.length
-          );
-          totalClassPreparednessRating = Math.round(
-            totalClassPreparednessRating / data.length
-          );
-          totalContentQualityRating = Math.round(
-            totalContentQualityRating / data.length
-          );
-          totalOverallExperienceRating = Math.round(
-            totalOverallExperienceRating / data.length
-          );
+          totalContentDeliveryRating =
+            Math.round(
+              ((totalContentDeliveryRating + data.length) / data.length) * 100
+            ) / 100;
+          totalClassPreparednessRating =
+            Math.round(
+              ((totalClassPreparednessRating + data.length) / data.length) * 100
+            ) / 100;
+          totalContentQualityRating =
+            Math.round(
+              ((totalContentQualityRating + data.length) / data.length) * 100
+            ) / 100;
+          totalOverallExperienceRating =
+            Math.round(
+              ((totalOverallExperienceRating + data.length) / data.length) * 100
+            ) / 100;
 
           const summaryStats = `<tr>
                 <td>${data.length}</td>
-                <td>${ratingMap[totalContentDeliveryRating]}</td>
-                <td>${ratingMap[totalClassPreparednessRating]}</td>
-                <td>${ratingMap[totalContentQualityRating]}</td>
-                <td>${ratingMap[totalOverallExperienceRating]}</td>
+                <td>${totalContentDeliveryRating}</td>
+                <td>${totalClassPreparednessRating}</td>
+                <td>${totalContentQualityRating}</td>
+                <td>${totalOverallExperienceRating}</td>
             </tr>`;
 
           const title = `<h1 class="title">Summary</h1>`;
