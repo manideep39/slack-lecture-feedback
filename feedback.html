@@ -181,6 +181,7 @@
             classPreparedness,
             overallExperience,
             comments,
+            sentiment,
           } of data) {
             feedback += `<tr>
                 <td>${+contentDelivery + 1}</td>
@@ -188,6 +189,7 @@
                 <td>${+contentQuality + 1}</td>
                 <td>${+overallExperience + 1}</td>
                 <td>${comments}</td>
+                <td>${sentiment}</td>
             </tr>`;
           }
           const title = `<h1 class="title">Detailed Feedback</h1>`;

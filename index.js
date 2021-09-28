@@ -3,6 +3,11 @@ const path = require("path");
 require("dotenv").config();
 const cors = require("cors");
 
+const natural = require("natural");
+const aposToLexForm = require("apos-to-lex-form");
+const SpellCorrector = require("spelling-corrector");
+const SW = require("stopword");
+
 const axios = require("axios");
 const mongoose = require("mongoose");
 const express = require("express");
@@ -44,6 +49,7 @@ app.post("/slack/lecturefeedback", async (req, res) => {
         contentQuality: contentQuality.selected_option.value,
         overallExperience: overallExperience.selected_option.value,
         comments: comments.value,
+        sentiment: findSentiment(comments.value),
       });
       return res.status(200).json({ response_action: "clear" });
     } else {
@@ -110,6 +116,7 @@ app.get("/feedback", async (req, res) => {
 
     res.status(200).json(feedback);
   } catch (err) {
+    console.error(err.message);
     res.status(500).send("Something went wrong");
   }
 });
@@ -208,4 +215,34 @@ async function postData(url = "", data = "") {
     data, // body data type must match "Content-Type" header
   });
   return response; // parses JSON response into native JavaScript objects
+}
+
+function findSentiment(comment) {
+  const lexedComment = aposToLexForm(comment);
+  const casedComment = lexedComment.toLowerCase();
+  const alphaOnlyComment = casedComment.replace(/[^a-zA-Z\s]+/g, "");
+
+  const { WordTokenizer } = natural;
+  const tokenizer = new WordTokenizer();
+  const tokenizedComment = tokenizer.tokenize(alphaOnlyComment);
+
+  const spellCorrector = new SpellCorrector();
+  spellCorrector.loadDictionary();
+
+  tokenizedComment.forEach((word, index) => {
+    tokenizedComment[index] = spellCorrector.correct(word);
+  });
+  const filteredComment = SW.removeStopwords(tokenizedComment);
+
+  const { SentimentAnalyzer, PorterStemmer } = natural;
+  const analyzer = new SentimentAnalyzer("English", PorterStemmer, "afinn");
+  const analysis = analyzer.getSentiment(filteredComment);
+
+  if (analysis > 0) {
+    return "Positive";
+  } else if (analysis < 0) {
+    return "Negative";
+  } else if (analysis === 0) {
+    return "Neutral";
+  }
 }

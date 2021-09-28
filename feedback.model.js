@@ -8,7 +8,8 @@ const feedbackSchema = mongoose.Schema({
   contentDelivery: { type: String, required: true },
   classPreparedness: { type: String, required: true },
   overallExperience: { type: String, required: true },
-  comments: { type: String, required: false },
+  comments: { type: String, required: true, default: "No comments." },
+  sentiment: { type: String, required: false },
 });
 
 module.exports = mongoose.model("feedbacks", feedbackSchema);
