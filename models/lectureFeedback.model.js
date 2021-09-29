@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const feedbackSchema = mongoose.Schema({
+const lectureFeedbackSchema = mongoose.Schema({
   teamId: { type: String, required: true },
   sessionDate: { type: String, required: true },
   sessionLead: { type: String, required: true },
@@ -12,4 +12,4 @@ const feedbackSchema = mongoose.Schema({
   sentiment: { type: String, required: false },
 });
 
-module.exports = mongoose.model("feedbacks", feedbackSchema);
+module.exports = mongoose.model("lecturefeedbacks", lectureFeedbackSchema);

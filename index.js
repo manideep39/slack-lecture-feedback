@@ -13,8 +13,8 @@ const mongoose = require("mongoose");
 const express = require("express");
 const app = express();
 
-const Feedback = require("./feedback.model");
-const Team = require("./team.model");
+const LectureFeedback = require("./models/lectureFeedback.model");
+const Team = require("./models/team.model");
 
 app.use(express.json());
 app.use(
@@ -26,9 +26,9 @@ app.use(cors());
 
 const { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI, KEY } = process.env;
 
-app.post("/slack/lecturefeedback", async (req, res) => {
+app.post("/slack/interactive-endpoint", async (req, res) => {
   try {
-    const feedbackForm = require("./feedbackForm.json");
+    const feedbackForm = require("./forms/lectureFeedbackForm.json");
     const payload = JSON.parse(req.body.payload);
     if (payload.type === "view_submission") {
       const {
@@ -40,7 +40,7 @@ app.post("/slack/lecturefeedback", async (req, res) => {
         sessionLead: { sessionLead },
         sessionDate: { sessionDate },
       } = payload.view.state.values;
-      await Feedback.create({
+      await LectureFeedback.create({
         teamId: payload.team.id,
         sessionDate: sessionDate.selected_date,
         sessionLead: sessionLead.selected_option.value,
@@ -99,19 +99,23 @@ app.get("/feedback", async (req, res) => {
 
     let feedback;
     if (teamId && sessionLead && sessionDate) {
-      feedback = await Feedback.find({ teamId, sessionLead, sessionDate });
+      feedback = await LectureFeedback.find({
+        teamId,
+        sessionLead,
+        sessionDate,
+      });
     } else if (teamId && sessionLead) {
-      feedback = await Feedback.find({ teamId, sessionLead });
+      feedback = await LectureFeedback.find({ teamId, sessionLead });
     } else if (teamId && sessionDate) {
-      feedback = await Feedback.find({ teamId, sessionDate });
+      feedback = await LectureFeedback.find({ teamId, sessionDate });
     } else if (sessionLead && sessionDate) {
-      feedback = await Feedback.find({ sessionLead, sessionDate });
+      feedback = await LectureFeedback.find({ sessionLead, sessionDate });
     } else if (teamId) {
-      feedback = await Feedback.find({ teamId });
+      feedback = await LectureFeedback.find({ teamId });
     } else if (sessionLead) {
-      feedback = await Feedback.find({ sessionLead });
+      feedback = await LectureFeedback.find({ sessionLead });
     } else if (sessionDate) {
-      feedback = await Feedback.find({ sessionDate });
+      feedback = await LectureFeedback.find({ sessionDate });
     }
 
     res.status(200).json(feedback);
@@ -173,7 +177,14 @@ app.listen(process.env.PORT || 3000, () => {
     mongoose.connect(
       process.env.MONGODB_URI,
       { useNewUrlParser: true, useUnifiedTopology: true },
-      async () => console.log("Mongoose is connected")
+      async () => {
+        console.log("Mongoose is connected");
+        const feedback = await LectureFeedback.find({}).lean();
+        for (const { comments, _id } of feedback) {
+          const analysis = findSentiment(comments);
+          await LectureFeedback.findByIdAndUpdate(_id, { sentiment: analysis });
+        }
+      }
     );
   } catch (e) {
     console.log("could not connect");
