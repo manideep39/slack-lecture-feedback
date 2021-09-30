@@ -60,7 +60,7 @@ app.post("/slack/interactive-endpoint", async (req, res) => {
       });
 
       feedbackForm.trigger_id = payload.trigger_id;
-      feedbackForm.view.blocks[1].element.options = sessionLeads.map(
+      feedbackForm.view.blocks[2].element.options = sessionLeads.map(
         (lead) => ({
           text: {
             type: "plain_text",
