@@ -13,7 +13,7 @@ const pairProgrammingFeedbackSchema = mongoose.Schema(
     partnerScore: { type: String, required: true, trim: true },
     overallExperience: { type: String, required: true, trim: true },
   },
-  { timestamp: true }
+  { timestamps: true }
 );
 
 module.exports = mongoose.model(
