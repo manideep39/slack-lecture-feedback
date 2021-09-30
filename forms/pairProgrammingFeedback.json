@@ -2,10 +2,10 @@
   "view": {
     "title": {
       "type": "plain_text",
-      "text": "Lecture Feedback",
+      "text": "Pair Programming",
       "emoji": true
     },
-    "callback_id": "lecture_feedback",
+    "callback_id": "pair_programming_feedback",
     "submit": {
       "type": "plain_text",
       "text": "Submit",
@@ -18,6 +18,24 @@
       "emoji": true
     },
     "blocks": [
+      {
+        "block_id": "studentName",
+        "type": "input",
+        "element": {
+          "type": "plain_text_input",
+          "action_id": "studentName",
+          "placeholder": {
+            "type": "plain_text",
+            "text": "Enter your name",
+            "emoji": true
+          }
+        },
+        "label": {
+          "type": "plain_text",
+          "text": "Your name",
+          "emoji": true
+        }
+      },
       {
         "block_id": "studentCode",
         "type": "input",
@@ -32,7 +50,25 @@
         },
         "label": {
           "type": "plain_text",
-          "text": "Student code",
+          "text": "Your student code",
+          "emoji": true
+        }
+      },
+      {
+        "block_id": "partnerName",
+        "type": "input",
+        "element": {
+          "type": "plain_text_input",
+          "action_id": "partnerName",
+          "placeholder": {
+            "type": "plain_text",
+            "text": "Enter your partner name",
+            "emoji": true
+          }
+        },
+        "label": {
+          "type": "plain_text",
+          "text": "Partner name",
           "emoji": true
         }
       },
@@ -55,7 +91,7 @@
         }
       },
       {
-        "block_id": "sessionLead",
+        "block_id": "ableToSolveQuestion",
         "type": "input",
         "element": {
           "type": "static_select",
@@ -64,17 +100,60 @@
             "text": "Select an item",
             "emoji": true
           },
-          "options": [],
-          "action_id": "sessionLead"
+          "options": [
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "Yes",
+                "emoji": true
+              },
+              "value": "1"
+            },
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "No",
+                "emoji": true
+              },
+              "value": "0"
+            }
+          ],
+          "action_id": "ableToSolveQuestion"
         },
         "label": {
           "type": "plain_text",
-          "text": "Session lead",
+          "text": "Were you able to solve the question?",
           "emoji": true
         }
       },
       {
-        "block_id": "contentDelivery",
+        "block_id": "whatWentWell",
+        "type": "input",
+        "element": {
+          "type": "plain_text_input",
+          "action_id": "whatWentWell"
+        },
+        "label": {
+          "type": "plain_text",
+          "text": "What went well",
+          "emoji": true
+        }
+      },
+      {
+        "block_id": "challengesFaced",
+        "type": "input",
+        "element": {
+          "type": "plain_text_input",
+          "action_id": "challengesFaced"
+        },
+        "label": {
+          "type": "plain_text",
+          "text": "Challenges faced",
+          "emoji": true
+        }
+      },
+      {
+        "block_id": "partnerScore",
         "type": "input",
         "element": {
           "type": "static_select",
@@ -90,7 +169,7 @@
                 "text": "Very Poor",
                 "emoji": true
               },
-              "value": "0"
+              "value": "1"
             },
             {
               "text": {
@@ -98,7 +177,7 @@
                 "text": "Poor",
                 "emoji": true
               },
-              "value": "1"
+              "value": "2"
             },
             {
               "text": {
@@ -106,7 +185,7 @@
                 "text": "Average",
                 "emoji": true
               },
-              "value": "2"
+              "value": "3"
             },
             {
               "text": {
@@ -114,7 +193,7 @@
                 "text": "Good",
                 "emoji": true
               },
-              "value": "3"
+              "value": "4"
             },
             {
               "text": {
@@ -122,134 +201,14 @@
                 "text": "Excellent",
                 "emoji": true
               },
-              "value": "4"
+              "value": "5"
             }
           ],
-          "action_id": "contentDelivery"
+          "action_id": "partnerScore"
         },
         "label": {
           "type": "plain_text",
-          "text": "Content delivery",
-          "emoji": true
-        }
-      },
-      {
-        "block_id": "classPreparedness",
-        "type": "input",
-        "element": {
-          "type": "static_select",
-          "placeholder": {
-            "type": "plain_text",
-            "text": "Select an item",
-            "emoji": true
-          },
-          "options": [
-            {
-              "text": {
-                "type": "plain_text",
-                "text": "Very Poor",
-                "emoji": true
-              },
-              "value": "0"
-            },
-            {
-              "text": {
-                "type": "plain_text",
-                "text": "Poor",
-                "emoji": true
-              },
-              "value": "1"
-            },
-            {
-              "text": {
-                "type": "plain_text",
-                "text": "Average",
-                "emoji": true
-              },
-              "value": "2"
-            },
-            {
-              "text": {
-                "type": "plain_text",
-                "text": "Good",
-                "emoji": true
-              },
-              "value": "3"
-            },
-            {
-              "text": {
-                "type": "plain_text",
-                "text": "Excellent",
-                "emoji": true
-              },
-              "value": "4"
-            }
-          ],
-          "action_id": "classPreparedness"
-        },
-        "label": {
-          "type": "plain_text",
-          "text": "Class preparedness",
-          "emoji": true
-        }
-      },
-      {
-        "block_id": "contentQuality",
-        "type": "input",
-        "element": {
-          "type": "static_select",
-          "placeholder": {
-            "type": "plain_text",
-            "text": "Select an item",
-            "emoji": true
-          },
-          "options": [
-            {
-              "text": {
-                "type": "plain_text",
-                "text": "Very Poor",
-                "emoji": true
-              },
-              "value": "0"
-            },
-            {
-              "text": {
-                "type": "plain_text",
-                "text": "Poor",
-                "emoji": true
-              },
-              "value": "1"
-            },
-            {
-              "text": {
-                "type": "plain_text",
-                "text": "Average",
-                "emoji": true
-              },
-              "value": "2"
-            },
-            {
-              "text": {
-                "type": "plain_text",
-                "text": "Good",
-                "emoji": true
-              },
-              "value": "3"
-            },
-            {
-              "text": {
-                "type": "plain_text",
-                "text": "Excellent",
-                "emoji": true
-              },
-              "value": "4"
-            }
-          ],
-          "action_id": "contentQuality"
-        },
-        "label": {
-          "type": "plain_text",
-          "text": "Content quality",
+          "text": "Score the partner as a team member in pair programming",
           "emoji": true
         }
       },
@@ -270,7 +229,7 @@
                 "text": "Very Poor",
                 "emoji": true
               },
-              "value": "0"
+              "value": "1"
             },
             {
               "text": {
@@ -278,7 +237,7 @@
                 "text": "Poor",
                 "emoji": true
               },
-              "value": "1"
+              "value": "2"
             },
             {
               "text": {
@@ -286,7 +245,7 @@
                 "text": "Average",
                 "emoji": true
               },
-              "value": "2"
+              "value": "3"
             },
             {
               "text": {
@@ -294,7 +253,7 @@
                 "text": "Good",
                 "emoji": true
               },
-              "value": "3"
+              "value": "4"
             },
             {
               "text": {
@@ -302,7 +261,7 @@
                 "text": "Excellent",
                 "emoji": true
               },
-              "value": "4"
+              "value": "5"
             }
           ],
           "action_id": "overallExperience"
@@ -310,20 +269,6 @@
         "label": {
           "type": "plain_text",
           "text": "Overall experience",
-          "emoji": true
-        }
-      },
-      {
-        "block_id": "comments",
-        "type": "input",
-        "element": {
-          "type": "plain_text_input",
-          "action_id": "comments",
-          "initial_value": "No comments"
-        },
-        "label": {
-          "type": "plain_text",
-          "text": "Comments",
           "emoji": true
         }
       }

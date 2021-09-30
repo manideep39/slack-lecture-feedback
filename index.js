@@ -14,6 +14,7 @@ const express = require("express");
 const app = express();
 
 const LectureFeedback = require("./models/lectureFeedback.model");
+const PairProgrammingFeedback = require("./models/pairProgrammingFeedback.model");
 const Team = require("./models/team.model");
 
 app.use(express.json());
@@ -28,58 +29,84 @@ const { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI, KEY } = process.env;
 
 app.post("/slack/interactive-endpoint", async (req, res) => {
   try {
-    const feedbackForm = require("./forms/lectureFeedbackForm.json");
     const payload = JSON.parse(req.body.payload);
-    if (payload.type === "view_submission") {
+    const { callback_id, trigger_id, team, type, view } = payload;
+    if (type === "view_submission") {
       const {
-        contentDelivery: { contentDelivery },
-        classPreparedness: { classPreparedness },
-        contentQuality: { contentQuality },
-        overallExperience: { overallExperience },
-        comments: { comments },
-        studentCode: { studentCode },
-        sessionLead: { sessionLead },
-        sessionDate: { sessionDate },
-      } = payload.view.state.values;
-      await LectureFeedback.create({
-        teamId: payload.team.id,
-        sessionDate: sessionDate.selected_date,
-        sessionLead: sessionLead.selected_option.value,
-        contentDelivery: contentDelivery.selected_option.value,
-        classPreparedness: classPreparedness.selected_option.value,
-        contentQuality: contentQuality.selected_option.value,
-        overallExperience: overallExperience.selected_option.value,
-        comments: comments.value,
-        studentCode: studentCode.value,
-        sentiment: findSentiment(comments.value),
-      });
-      return res.status(200).json({ response_action: "clear" });
+        callback_id,
+        state: { values },
+      } = view;
+
+      if (callback_id === "lecture_feedback") {
+        await LectureFeedback.create({
+          teamId: team.id,
+          sessionDate: values.sessionDate.sessionDate.selected_date,
+          sessionLead: values.sessionLead.sessionLead.selected_option.value,
+          contentDelivery:
+            values.contentDelivery.contentDelivery.selected_option.value,
+          classPreparedness:
+            values.classPreparedness.classPreparedness.selected_option.value,
+          contentQuality:
+            values.contentQuality.contentQuality.selected_option.value,
+          overallExperience:
+            values.overallExperience.overallExperience.selected_option.value,
+          comments: values.comments.comments.value,
+          studentCode: values.studentCode.studentCode.value,
+          sentiment: findSentiment(values.comments.comments.value),
+        });
+        res.end();
+      } else if (callback_id === "pair_programming_feedback") {
+        await PairProgrammingFeedback.create({
+          teamId: team.id,
+          studentName: values.studentName.studentName.value,
+          studentCode: values.studentCode.studentCode.value,
+          partnerName: values.partnerName.partnerName.value,
+          sessionDate: values.sessionDate.sessionDate.selected_date,
+          ableToSolveQuestion:
+            values.ableToSolveQuestion.ableToSolveQuestion.selected_option
+              .value,
+          whatWentWell: values.whatWentWell.whatWentWell.value,
+          challengesFaced: values.challengesFaced.challengesFaced.value,
+          partnerScore: values.partnerScore.partnerScore.selected_option.value,
+          overallExperience:
+            values.overallExperience.overallExperience.selected_option.value,
+        });
+        res.end();
+      }
     } else {
       const { accessToken, sessionLeads } = await Team.findOne({
-        teamId: payload.team.id,
+        teamId: team.id,
       });
 
-      feedbackForm.trigger_id = payload.trigger_id;
-      feedbackForm.view.blocks[2].element.options = sessionLeads.map(
-        (lead) => ({
-          text: {
-            type: "plain_text",
-            text: `${lead}`,
-            emoji: true,
-          },
-          value: `${lead.trim().toLowerCase().replace(/ /g, "-")}`,
-        })
-      );
+      let feedbackForm;
+      if (callback_id === "pair_programming_feedback") {
+        feedbackForm = require("./forms/pairProgrammingFeedback.json");
+      } else if (callback_id === "lecture_feedback") {
+        feedbackForm = require("./forms/lectureFeedbackForm.json");
 
+        feedbackForm.view.blocks[2].element.options = sessionLeads.map(
+          (lead) => ({
+            text: {
+              type: "plain_text",
+              text: `${lead}`,
+              emoji: true,
+            },
+            value: `${lead.trim().toLowerCase().replace(/ /g, "-")}`,
+          })
+        );
+      }
+
+      feedbackForm.trigger_id = trigger_id;
       const response = await axios({
         method: "post",
         url: "https://slack.com/api/views.open",
         headers: {
           Authorization: "Bearer " + accessToken,
-          "Content-Type": "application/json",
+          "Content-Type": "application/json; charset=utf-8",
         },
         data: feedbackForm,
       });
+
       return res.send("Ok");
     }
   } catch (e) {
