@@ -19,6 +19,24 @@
     },
     "blocks": [
       {
+        "block_id": "studentCode",
+        "type": "input",
+        "element": {
+          "type": "plain_text_input",
+          "action_id": "studentCode",
+          "placeholder": {
+            "type": "plain_text",
+            "text": "ac_042",
+            "emoji": true
+          }
+        },
+        "label": {
+          "type": "plain_text",
+          "text": "Student Code",
+          "emoji": true
+        }
+      },
+      {
         "block_id": "sessionDate",
         "type": "input",
         "element": {

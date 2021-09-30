@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 const lectureFeedbackSchema = mongoose.Schema({
+  studentCode: { type: String, required: true, trim: true },
   teamId: { type: String, required: true },
   sessionDate: { type: String, required: true },
   sessionLead: { type: String, required: true },

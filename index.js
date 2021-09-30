@@ -37,6 +37,7 @@ app.post("/slack/interactive-endpoint", async (req, res) => {
         contentQuality: { contentQuality },
         overallExperience: { overallExperience },
         comments: { comments },
+        studentCode: { studentCode },
         sessionLead: { sessionLead },
         sessionDate: { sessionDate },
       } = payload.view.state.values;
@@ -49,6 +50,7 @@ app.post("/slack/interactive-endpoint", async (req, res) => {
         contentQuality: contentQuality.selected_option.value,
         overallExperience: overallExperience.selected_option.value,
         comments: comments.value,
+        studentCode: studentCode.value,
         sentiment: findSentiment(comments.value),
       });
       return res.status(200).json({ response_action: "clear" });
