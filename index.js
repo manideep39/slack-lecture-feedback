@@ -206,14 +206,7 @@ app.listen(process.env.PORT || 3000, () => {
     mongoose.connect(
       process.env.MONGODB_URI,
       { useNewUrlParser: true, useUnifiedTopology: true },
-      async () => {
-        console.log("Mongoose is connected");
-        const feedback = await LectureFeedback.find({}).lean();
-        for (const { comments, _id } of feedback) {
-          const analysis = findSentiment(comments);
-          await LectureFeedback.findByIdAndUpdate(_id, { sentiment: analysis });
-        }
-      }
+      () => console.log("Mongoose is connected")
     );
   } catch (e) {
     console.log("could not connect");
