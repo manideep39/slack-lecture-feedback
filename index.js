@@ -38,6 +38,7 @@ app.post("/slack/interactive-endpoint", async (req, res) => {
       } = view;
 
       if (callback_id === "lecture_feedback") {
+        res.status(200).json({ response_action: "clear" });
         await LectureFeedback.create({
           teamId: team.id,
           sessionDate: values.sessionDate.sessionDate.selected_date,
@@ -54,8 +55,8 @@ app.post("/slack/interactive-endpoint", async (req, res) => {
           studentCode: values.studentCode.studentCode.value,
           sentiment: findSentiment(values.comments.comments.value),
         });
-        res.end();
       } else if (callback_id === "pair_programming_feedback") {
+        res.status(200).json({ response_action: "clear" });
         await PairProgrammingFeedback.create({
           teamId: team.id,
           studentName: values.studentName.studentName.value,
@@ -71,7 +72,6 @@ app.post("/slack/interactive-endpoint", async (req, res) => {
           overallExperience:
             values.overallExperience.overallExperience.selected_option.value,
         });
-        res.end();
       }
     } else {
       const { accessToken, sessionLeads } = await Team.findOne({
