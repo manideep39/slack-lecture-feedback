@@ -173,6 +173,7 @@
                   <th>Comments</th>
                   <th>Sentiment</th>
                   <th>Student Code</th>
+                  <th>Name</th>
               </tr>
           </thead>`;
 
@@ -185,6 +186,7 @@
             comments,
             sentiment,
             studentCode,
+            name,
           } of data) {
             feedback += `<tr>
                 <td style=${
@@ -204,6 +206,7 @@
                   sentiment === "Negative" && "background-color:#FF8A80"
                 }>${sentiment}</td>
                 <td>${studentCode || "Not Collected"}</td>
+                <td>${name || "Not Collected"}</td>
             </tr>`;
           }
           const title = `<h1 class="title">Detailed Feedback</h1>`;
