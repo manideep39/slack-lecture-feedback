@@ -12,8 +12,14 @@ const lectureFeedbackSchema = mongoose.Schema(
     overallExperience: { type: String, required: true },
     comments: { type: String, required: true, default: "No comments." },
     sentiment: { type: String, required: false },
+    userId: { type: String, required: true },
   },
   { timestamps: true }
+);
+
+lectureFeedbackSchema.index(
+  { studentCode: 1, sessionDate: 1, sessionLead: 1 },
+  { unique: true }
 );
 
 module.exports = mongoose.model("lecturefeedbacks", lectureFeedbackSchema);

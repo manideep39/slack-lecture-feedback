@@ -30,7 +30,7 @@ const { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI, KEY } = process.env;
 app.post("/slack/interactive-endpoint", async (req, res) => {
   try {
     const payload = JSON.parse(req.body.payload);
-    const { callback_id, trigger_id, team, type, view } = payload;
+    const { callback_id, trigger_id, team, type, view, user } = payload;
     if (type === "view_submission") {
       const {
         callback_id,
@@ -41,6 +41,7 @@ app.post("/slack/interactive-endpoint", async (req, res) => {
         res.status(200).json({ response_action: "clear" });
         await LectureFeedback.create({
           teamId: team.id,
+          userId: user.id,
           sessionDate: values.sessionDate.sessionDate.selected_date,
           sessionLead: values.sessionLead.sessionLead.selected_option.value,
           contentDelivery:
