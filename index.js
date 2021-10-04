@@ -42,6 +42,7 @@ app.post("/slack/interactive-endpoint", async (req, res) => {
         await LectureFeedback.create({
           teamId: team.id,
           userId: user.id,
+          name: user.name,
           sessionDate: values.sessionDate.sessionDate.selected_date,
           sessionLead: values.sessionLead.sessionLead.selected_option.value,
           contentDelivery:
