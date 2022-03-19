@@ -90,7 +90,7 @@ app.post("/slack/interactive-endpoint", async (req, res) => {
           (lead) => ({
             text: {
               type: "plain_text",
-              text: `${lead}`,
+              text: `${lead.charAt(0).toUpperCase()}`,
               emoji: true,
             },
             value: `${lead.trim().toLowerCase().replace(/ /g, "-")}`,
@@ -185,7 +185,7 @@ app.put("/sessionLeads", async (req, res) => {
     }
     await Team.findOneAndUpdate(
       { teamId },
-      { sessionLeads: req.body.sessionLeads }
+      { $addToSet: { sessionLeads: { $each: req.body.sessionLeads.map(e => e.trim().toLowerCase()) } } }
     );
 
     res.status(200).send("Updated!");
