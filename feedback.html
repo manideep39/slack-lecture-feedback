@@ -49,7 +49,6 @@
 
       #navbar {
         border: 1px solid black;
-        text-align: center;
         background-color: rgb(73, 115, 150);
         color: #fff;
         height: 70px;
@@ -57,10 +56,52 @@
         justify-content: center;
         align-items: center;
       }
+
+      #admin {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 15px;
+      }
+
+      #admin > * {
+        margin: 5px;
+      }
     </style>
   </head>
   <body>
     <h1 id="navbar">Lecture Feedback</h1>
+    <div id="admin">
+      <h1 class="title">Add Session Leads</h1>
+      <p style="width: 600px; color: gray;">Add Session Leads to workspace from here. Can add more names by separating with comma. Once added check from the Query section to confirm. <br><b>Note: There is no option to remove Session Lead names.</b></p>
+      <form id="add-session-lead">
+        <select id="workspaces"></select>
+        <input
+          type="text"
+          id="new-session-lead"
+          placeholder="Session Lead Name"
+        />
+        <input type="text" placeholder="Enter key" id="pin" />
+        <input type="submit" value="Add" />
+      </form>
+      <p style="color: gray; width: 600px">
+        If the workspace you are looking for is not found in the select
+        workspace dropdown, click on Add to Slack button and give permission to
+        the respective workspace.
+      </p>
+      <a
+        href="https://slack.com/oauth/v2/authorize?client_id=2125375846757.2506834328390&scope=commands&user_scope="
+        ><img
+          alt="Add to Slack"
+          height="40"
+          width="139"
+          src="https://platform.slack-edge.com/img/add_to_slack.png"
+          srcset="
+            https://platform.slack-edge.com/img/add_to_slack.png    1x,
+            https://platform.slack-edge.com/img/add_to_slack@2x.png 2x
+          "
+      /></a>
+    </div>
     <div style="text-align: center">
       <h1 class="title">Query</h1>
       <form id="feedback">
@@ -95,9 +136,35 @@
           })
           .then(function (data) {
             teamsData = data;
-            populateTeams(teamsData);
+            const teamsSelect = document.querySelector("#teams");
+            const workspacesSelect = document.querySelector("#workspaces");
+            populateTeams(teamsData, teamsSelect);
+            populateTeams(teamsData, workspacesSelect);
           });
       };
+
+      document
+        .querySelector("#add-session-lead")
+        .addEventListener("submit", (event) => {
+          event.preventDefault();
+          const addSessionLeadFormFields = event.target.elements;
+          const teamId = addSessionLeadFormFields.namedItem("workspaces").value;
+          const sessionLeadName =
+            addSessionLeadFormFields.namedItem("new-session-lead").value;
+          const pin = addSessionLeadFormFields.namedItem("pin").value;
+          fetch(`${baseUrl}/sessionLeads`, {
+            method: "PUT",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              teamId,
+              sessionLeads: sessionLeadName.split(",").map((e) => e.trim()),
+              key: pin,
+            }),
+          }).then(() => location.reload()).catch(err => console.log(err));
+        });
 
       const teams = document.querySelector("#teams");
       teams.addEventListener("change", (event) => {
@@ -146,8 +213,7 @@
         }
       });
 
-      function populateTeams(teams) {
-        const teamsSelect = document.querySelector("#teams");
+      function populateTeams(teams, teamsSelect) {
         teamsSelect.innerHTML = "";
         const options = teams
           .map(function ({ teamId, name }) {
