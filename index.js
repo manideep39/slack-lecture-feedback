@@ -90,7 +90,7 @@ app.post("/slack/interactive-endpoint", async (req, res) => {
           (lead) => ({
             text: {
               type: "plain_text",
-              text: `${lead.charAt(0).toUpperCase()}`,
+              text: `${lead.charAt(0).toUpperCase() + lead.slice(1)}`,
               emoji: true,
             },
             value: `${lead.trim().toLowerCase().replace(/ /g, "-")}`,
